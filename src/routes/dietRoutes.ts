@@ -7,7 +7,7 @@ import { checkSessionIdExist, checkUserMatch } from '../middlewares/checkSession
 
 export async function dietRoutes(app: FastifyInstance) {
 
-  app.post('/', {
+  app.post('/create', {
     preHandler: [checkSessionIdExist],
   },
     async (request, reply) => {
@@ -57,5 +57,34 @@ export async function dietRoutes(app: FastifyInstance) {
       return reply.status(201).send('refeiçao alterada com sucesso') 
     }
   );
+
+
+  app.delete('/:id', {
+    preHandler: [ checkUserMatch ],
+  },
+    async (request, reply) => {
+      const { id } = request.params;
+     
+     await knex('meals').where("id", id).delete()
+      return reply.status(201).send('refeiçao deletada com sucesso') 
+    }
+  );
+
+  app.get('/', {
+    preHandler: [ checkSessionIdExist ],
+  },
+    async (request, reply) => {
+      const userId = request.cookies.sessionId
+      let meals = await knex('meals').where("session_id", userId)
+
+      if ( meals.length === 0 ){
+        return reply.status(404).send('no meals found in your registration')
+      }
+
+      return reply.status(201).send(meals)
+
+    }
+  );
+
 
 }

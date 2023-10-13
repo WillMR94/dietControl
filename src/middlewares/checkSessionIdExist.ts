@@ -20,8 +20,14 @@ export async function checkUserMatch(
 ) {
   const { id } = request.params;
   const userId = request.cookies.sessionId
-  let { session_id } = await knex('meals').where("id", id).select('session_id').first()
-  console.log(session_id)
+
+  try{ let { session_id } = await knex('meals').where("id", id).select('session_id').first()}
+ catch(e){
+  reply.status(404).send({
+    error: 'meal not found in your registration',
+  })
+ }
+ let { session_id } = await knex('meals').where("id", id).select('session_id').first()
 
   if ( userId != session_id ) {
     return reply.status(401).send({
@@ -29,5 +35,6 @@ export async function checkUserMatch(
     })
   }
 }
+
 
 
