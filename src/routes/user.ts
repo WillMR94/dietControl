@@ -44,10 +44,7 @@ export async function userRoutes(app: FastifyInstance) {
       )
 
       let userId = await knex('users').select('id').where({'nameUser':nameUser}).first()
-      
-      //let sessionId = request.cookies.sessionId
-
-    
+       
       if(!userId){
         reply.cookie('sessionId', '',{
           path: '/',
@@ -65,6 +62,30 @@ export async function userRoutes(app: FastifyInstance) {
     }
   )
 
+
+
+  app.get('/summary', {
+    preHandler: [ checkSessionIdExist ],
+  },
+    async (request, reply) => {
+      const id = request.cookies.sessionId
+      const summary = await knex('meals').select('type')
+      .where('session_id', id)
+      
+      let summaryDiet = summary.filter(summary => summary.type === 'dietFood')
+      let summaryJunk = summary.filter(summary => summary.type === 'junkFood')
+
+      //summary = total
+      //summaryDiet = total diet food
+      //summaryJunk = total junk food
+      console.log (summary)
+      return reply.status(201).send(`
+      total de refeições registradas: ${summary.length}
+      total de refeições dentro da dieta: ${summaryDiet.length}
+      total de refeições fora da dieta: ${summaryJunk.length}`)
+     
+    }
+  )
 
 
 
