@@ -74,16 +74,32 @@ export async function userRoutes(app: FastifyInstance) {
       
       let summaryDiet = summary.filter(summary => summary.type === 'dietFood')
       let summaryJunk = summary.filter(summary => summary.type === 'junkFood')
+      let summarySimplify = summary.map( summary => summary.type )
+
+      let contadorAtual = 0;
+      let maiorContador = 0;
+
+      for (let i = 0; i < summarySimplify.length; i++) {
+        if (summarySimplify[i] === 'dietFood') {
+          contadorAtual++;
+          if (contadorAtual > maiorContador) {
+              maiorContador = contadorAtual;
+          }
+        } else {
+        contadorAtual = 0;
+        }
+      }
 
       //summary = total
       //summaryDiet = total diet food
       //summaryJunk = total junk food
-      console.log (summary)
+      //maiorContador = melhor sequencia
+
       return reply.status(201).send(`
       total de refeições registradas: ${summary.length}
       total de refeições dentro da dieta: ${summaryDiet.length}
-      total de refeições fora da dieta: ${summaryJunk.length}`)
-     
+      total de refeições fora da dieta: ${summaryJunk.length}
+      Melhor sequência de refeições dentro da dieta: ${maiorContador}`)
     }
   )
 
