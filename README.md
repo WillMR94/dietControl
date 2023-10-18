@@ -13,3 +13,20 @@
   Quantidade total de refeições dentro da dieta,
   Quantidade total de refeições fora da dieta,
   Melhor sequência de refeições dentro da dieta.
+
+  - Instalação: npm install
+
+  - Rotas:
+    Rotas de usuário
+      POST http://localhost:3333/user/create
+      POST http://localhost:3333/user/login
+      GET  http://localhost:3333/user/summary
+
+    Rotas de refeições
+      POST http://localhost:3333/diet/create
+      GET  http://localhost:3333/diet
+      PUT  http://localhost:3333/diet/:id
+      DELETE  http://localhost:3333/diet/:id
+
+
+    
